@@ -17,7 +17,8 @@ public class Bootstrap extends Job {
 
     @Override
     public void doJob() throws Exception {
-        Logger.getRootLogger().addAppender(new DBAppender());
+        // TODO - (This fails in Prod mode)
+        // Logger.getRootLogger().addAppender(new DBAppender());
 
         logger.info("Bootstrapping");
 
