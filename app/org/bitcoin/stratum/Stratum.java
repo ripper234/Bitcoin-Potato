@@ -3,6 +3,8 @@ package org.bitcoin.stratum;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -13,6 +15,10 @@ public class Stratum {
     }
 
     private final NetworkParameters networkParameters;
+
+    public static BigDecimal satoshisToBitcoin(BigInteger satoshis) {
+        return new BigDecimal("0.00000001").multiply(new BigDecimal(satoshis));
+    }
 
     public KeyPair newKeyPair() {
         ECKey key = new ECKey();

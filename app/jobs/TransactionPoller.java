@@ -7,10 +7,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import models.ExpectedTransaction;
 import org.apache.log4j.Logger;
-import org.bitcoin.stratum.OutgoingRemotePayment;
-import org.bitcoin.stratum.OutgoingRemoteTransaction;
-import org.bitcoin.stratum.RemoteTransaction;
-import org.bitcoin.stratum.StratumHolder;
+import org.bitcoin.stratum.*;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
@@ -18,7 +15,6 @@ import util.Collections3;
 import util.LogUtil;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -64,6 +60,9 @@ public class TransactionPoller extends Job {
             logger.warn(String.format("More than one transaction detected into %s: %s",
                     expectedTransaction.publicAddress,
                     Joiner.on(",").join(incomingTransactions)));
+
+            // let's not make any progress in this state (better safe than sorry)
+            return;
         }
 
         // Set up the next expected transaction
@@ -72,15 +71,15 @@ public class TransactionPoller extends Job {
         logger.info("Got transaction: " + actualTransaction);
 
         // Sanity check - the lower transactions are actually filtered beforehand.
-        TransactionOutput output = Collections3.single(actualTransaction.getTransaction().getOutputs());
-        BigDecimal btcOutput = satoshisToBitcoin(output.getValue());
+        TransactionOutput output = findOurOutputs(actualTransaction.getTransaction().getOutputs(), expectedTransaction.publicAddress);
+        BigDecimal btcOutput = Stratum.satoshisToBitcoin(output.getValue());
         checkArgument(btcOutput.compareTo(expectedTransaction.minimalAmount) >= 0);
 
         BigDecimal nextMinimalAmount = btcOutput.multiply(velocity);
 
-        // TODO - http://bitcoin.stackexchange.com/questions/2366/in-order-to-pay-someone-back-must-i-require-an-additional-address
-        TransactionInput input = Collections3.single(actualTransaction.getTransaction().getInputs());
-        ExpectedTransaction nextExpectedTx = new ExpectedTransaction(StratumHolder.Stratum.newKeyPair(), input.getFromAddress().toString(), nextMinimalAmount);
+        List<TransactionInput> inputs = actualTransaction.getTransaction().getInputs();
+        checkArgument(inputs.size() > 0);
+        ExpectedTransaction nextExpectedTx = new ExpectedTransaction(StratumHolder.Stratum.newKeyPair(), inputs.get(0).getFromAddress().toString(), nextMinimalAmount);
 
         logger.info("Next payment will be at least " + nextExpectedTx.minimalAmount + " BTC");
 
@@ -89,7 +88,6 @@ public class TransactionPoller extends Job {
 
         // TODO - Ideally, this next part should all be in one distributed transaction
         // Think about some clever thing to do in case of partial failure here.
-
         OutgoingRemoteTransaction outgoingTx = new OutgoingRemoteTransaction()
                 .addPayment(new OutgoingRemotePayment(expectedTransaction.payoutAddress, payout))
                 .addPayment(new OutgoingRemotePayment(housePublicAddress, payout))
@@ -100,6 +98,24 @@ public class TransactionPoller extends Job {
     }
 
     /**
+     * Returns those outputs that match our address
+     */
+    private TransactionOutput findOurOutputs(List<TransactionOutput> outputs, final String publicAddress) {
+        return Collections3.single(Collections2.filter(outputs, new Predicate<TransactionOutput>() {
+            @Override
+            public boolean apply(TransactionOutput transactionOutput) {
+                try {
+                    String outputAddress = new String(transactionOutput.getScriptPubKey().getPubKey(), "utf8");
+                    return outputAddress.equals(publicAddress);
+                } catch (Exception e) {
+                    logger.warn("Error claiming tx output", e);
+                    return false;
+                }
+            }
+        }));
+    }
+
+    /**
      * Discard and log any transactions that invalid
      */
     private List<RemoteTransaction> discardInvalidTransactions(List<RemoteTransaction> incomingTransactions, final BigDecimal minimalAmount) {
@@ -107,25 +123,19 @@ public class TransactionPoller extends Job {
             @Override
             public boolean apply(RemoteTransaction remoteTransaction) {
                 List<TransactionOutput> outputs = remoteTransaction.getTransaction().getOutputs();
-                if (outputs.size() != 1) {
-                    logger.warn("Got weird transaction that does not have exactly one output " + remoteTransaction);
+                if (outputs.size() < 1 || outputs.size() > 2) {
+                    // http://bitcoin.stackexchange.com/questions/2366/in-order-to-pay-someone-back-must-i-ask-them-for-a-return-address
+                    logger.warn("Got weird transaction that does not have exactly one or two output " + remoteTransaction);
                     return false;
                 }
-
-                if (remoteTransaction.getTransaction().getInputs().size() != 1) {
-                    // TODO - handle multiple inputs?
-                    // http://bitcoin.stackexchange.com/questions/2366/in-order-to-pay-someone-back-must-i-require-an-additional-address
-                    logger.warn("Got transaction with multiple inputs: " + remoteTransaction);
+                if (remoteTransaction.getTransaction().getInputs().isEmpty()) {
+                    logger.warn("No input on transaction. Did someone mine this onto our address?" + remoteTransaction);
                     return false;
                 }
                 TransactionOutput output = outputs.get(0);
-                return satoshisToBitcoin(output.getValue()).compareTo(minimalAmount) >= 0 &&
+                return Stratum.satoshisToBitcoin(output.getValue()).compareTo(minimalAmount) >= 0 &&
                         remoteTransaction.getConfirmations() > 0;
             }
         }));
-    }
-
-    public static BigDecimal satoshisToBitcoin(BigInteger satoshis) {
-        return new BigDecimal("0.00000001").multiply(new BigDecimal(satoshis));
     }
 }
