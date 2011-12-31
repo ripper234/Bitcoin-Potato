@@ -1,10 +1,10 @@
 package org.bitcoin.stratum;
 
+import com.bitcoinpotato.util.LogUtil;
 import com.google.bitcoin.core.Address;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.bitcoin.core.Transaction;
 import org.apache.log4j.Logger;
-import util.LogUtil;
 
 import java.math.BigInteger;
 

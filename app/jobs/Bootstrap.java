@@ -1,13 +1,12 @@
 package jobs;
 
+import com.bitcoinpotato.util.LogUtil;
 import models.ExpectedTransaction;
 import org.apache.log4j.Logger;
 import org.bitcoin.stratum.StratumHolder;
-import org.play.logging.DBAppender;
 import play.Play;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
-import util.LogUtil;
 
 import java.math.BigDecimal;
 

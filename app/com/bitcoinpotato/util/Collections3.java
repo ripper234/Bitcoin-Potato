@@ -1,4 +1,4 @@
-package util;
+package com.bitcoinpotato.util;
 
 import java.util.Collection;
 import java.util.List;

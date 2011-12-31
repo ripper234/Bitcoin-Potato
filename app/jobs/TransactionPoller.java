@@ -1,5 +1,7 @@
 package jobs;
 
+import com.bitcoinpotato.util.Collections3;
+import com.bitcoinpotato.util.LogUtil;
 import com.google.bitcoin.core.TransactionInput;
 import com.google.bitcoin.core.TransactionOutput;
 import com.google.common.base.Joiner;
@@ -11,8 +13,6 @@ import org.bitcoin.stratum.*;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
-import util.Collections3;
-import util.LogUtil;
 
 import java.math.BigDecimal;
 import java.util.List;
