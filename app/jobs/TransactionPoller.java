@@ -15,6 +15,7 @@ import util.LogUtil;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Lists.newArrayList;
 
 /**
@@ -56,7 +57,10 @@ public class TransactionPoller extends Job {
 
         // Set up the next expected transaction
         Transaction actualTransaction = incomingTransactions.get(0);
-        BigDecimal nextMinimalAmount = actualTransaction.amount.max(expectedTransaction.minimalAmount.multiply(velocity));
+
+        // Sanity check - the lower transactions are actually filtered beforehand.
+        checkArgument(actualTransaction.amount.compareTo(expectedTransaction.minimalAmount) >= 0);
+        BigDecimal nextMinimalAmount = actualTransaction.amount.multiply(velocity);
         ExpectedTransaction nextExpectedTx = new ExpectedTransaction(StratumHolder.Stratum.newKeyPair(), actualTransaction.fromAddress, nextMinimalAmount);
 
         BigDecimal commission = commissionRate.multiply(actualTransaction.amount);
