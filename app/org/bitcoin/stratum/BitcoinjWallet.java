@@ -17,6 +17,7 @@ public class BitcoinjWallet {
     private static final Logger log = LogUtil.getLogger();
 
     public static Transaction createSend(Address address, BigInteger nanocoins, Address changeAddress, NetworkParameters params) {
+        throw new RuntimeException();
         // TODO
 //        log.info("Creating send tx to " + address.toString() + " for " +
 //                bitcoinValueToFriendlyString(nanocoins));
