@@ -1,18 +1,24 @@
 package jobs;
 
-import com.bitcoinpotato.overlay.StratumHolder;
-import com.bitcoinpotato.overlay.Transaction;
+import com.google.bitcoin.core.TransactionInput;
+import com.google.bitcoin.core.TransactionOutput;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import models.ExpectedTransaction;
 import org.apache.log4j.Logger;
+import org.bitcoin.stratum.OutgoingRemotePayment;
+import org.bitcoin.stratum.OutgoingRemoteTransaction;
+import org.bitcoin.stratum.RemoteTransaction;
+import org.bitcoin.stratum.StratumHolder;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;
+import util.Collections3;
 import util.LogUtil;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -42,7 +48,7 @@ public class TransactionPoller extends Job {
         logger.debug("Transaction poller running");
 
         ExpectedTransaction expectedTransaction = ExpectedTransaction.getLatest();
-        List<Transaction> incomingTransactions = StratumHolder.Stratum.getIncomingTransactions(expectedTransaction.publicAddress);
+        List<RemoteTransaction> incomingTransactions = StratumHolder.Stratum.getIncomingTransactions(expectedTransaction.publicAddress);
 
         incomingTransactions = discardInvalidTransactions(incomingTransactions, expectedTransaction.minimalAmount);
         if (incomingTransactions.isEmpty()) {
@@ -61,37 +67,65 @@ public class TransactionPoller extends Job {
         }
 
         // Set up the next expected transaction
-        Transaction actualTransaction = incomingTransactions.get(0);
+        RemoteTransaction actualTransaction = Collections3.single(incomingTransactions);
 
         logger.info("Got transaction: " + actualTransaction);
 
         // Sanity check - the lower transactions are actually filtered beforehand.
-        checkArgument(actualTransaction.amount.compareTo(expectedTransaction.minimalAmount) >= 0);
+        TransactionOutput output = Collections3.single(actualTransaction.getTransaction().getOutputs());
+        BigDecimal btcOutput = satoshisToBitcoin(output.getValue());
+        checkArgument(btcOutput.compareTo(expectedTransaction.minimalAmount) >= 0);
 
-        BigDecimal nextMinimalAmount = actualTransaction.amount.multiply(velocity);
-        ExpectedTransaction nextExpectedTx = new ExpectedTransaction(StratumHolder.Stratum.newKeyPair(), actualTransaction.fromAddress, nextMinimalAmount);
+        BigDecimal nextMinimalAmount = btcOutput.multiply(velocity);
 
-        logger.info("Next payment will be " + );
-        BigDecimal commission = commissionRate.multiply(actualTransaction.amount);
-        BigDecimal payout = actualTransaction.amount.subtract(commission);
+        // TODO - http://bitcoin.stackexchange.com/questions/2366/in-order-to-pay-someone-back-must-i-require-an-additional-address
+        TransactionInput input = Collections3.single(actualTransaction.getTransaction().getInputs());
+        ExpectedTransaction nextExpectedTx = new ExpectedTransaction(StratumHolder.Stratum.newKeyPair(), input.getFromAddress().toString(), nextMinimalAmount);
+
+        logger.info("Next payment will be at least " + nextExpectedTx.minimalAmount + " BTC");
+
+        BigDecimal commission = commissionRate.multiply(btcOutput);
+        BigDecimal payout = btcOutput.subtract(commission);
 
         // TODO - Ideally, this next part should all be in one distributed transaction
         // Think about some clever thing to do in case of partial failure here.
-        StratumHolder.Stratum.sendTransaction(expectedTransaction.privateKey, expectedTransaction.payoutAddress, payout);
-        StratumHolder.Stratum.sendTransaction(expectedTransaction.privateKey, housePublicAddress, payout);
+
+        OutgoingRemoteTransaction outgoingTx = new OutgoingRemoteTransaction()
+                .addPayment(new OutgoingRemotePayment(expectedTransaction.payoutAddress, payout))
+                .addPayment(new OutgoingRemotePayment(housePublicAddress, payout))
+                .addInputKey(expectedTransaction.privateKey);
+
+        StratumHolder.Stratum.sendTransaction(outgoingTx);
         nextExpectedTx.save();
     }
 
     /**
-     * Discard and log any transactions that are lower than the minimum.
+     * Discard and log any transactions that invalid
      */
-    private List<Transaction> discardInvalidTransactions(List<Transaction> incomingTransactions, final BigDecimal minimalAmount) {
-        return newArrayList(Collections2.filter(incomingTransactions, new Predicate<Transaction>() {
+    private List<RemoteTransaction> discardInvalidTransactions(List<RemoteTransaction> incomingTransactions, final BigDecimal minimalAmount) {
+        return newArrayList(Collections2.filter(incomingTransactions, new Predicate<RemoteTransaction>() {
             @Override
-            public boolean apply(Transaction transaction) {
-                return transaction.amount.compareTo(minimalAmount) >= 0 &&
-                        transaction.confirmations > 0;
+            public boolean apply(RemoteTransaction remoteTransaction) {
+                List<TransactionOutput> outputs = remoteTransaction.getTransaction().getOutputs();
+                if (outputs.size() != 1) {
+                    logger.warn("Got weird transaction that does not have exactly one output " + remoteTransaction);
+                    return false;
+                }
+
+                if (remoteTransaction.getTransaction().getInputs().size() != 1) {
+                    // TODO - handle multiple inputs?
+                    // http://bitcoin.stackexchange.com/questions/2366/in-order-to-pay-someone-back-must-i-require-an-additional-address
+                    logger.warn("Got transaction with multiple inputs: " + remoteTransaction);
+                    return false;
+                }
+                TransactionOutput output = outputs.get(0);
+                return satoshisToBitcoin(output.getValue()).compareTo(minimalAmount) >= 0 &&
+                        remoteTransaction.getConfirmations() > 0;
             }
         }));
+    }
+
+    public static BigDecimal satoshisToBitcoin(BigInteger satoshis) {
+        return new BigDecimal("0.00000001").multiply(new BigDecimal(satoshis));
     }
 }

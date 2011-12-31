@@ -1,9 +1,8 @@
-package com.bitcoinpotato.overlay;
+package org.bitcoin.stratum;
 
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
@@ -23,12 +22,12 @@ public class Stratum {
     /**
      * Returns a list of all transaction that went to {@code address}, sorted by date.
      */
-    public List<Transaction> getIncomingTransactions(String address) {
+    public List<RemoteTransaction> getIncomingTransactions(String address) {
         // TODO
         return newArrayList();
     }
 
-    public void sendTransaction(byte[] privateKey, String payoutAddress, BigDecimal payout) {
+    public void sendTransaction(OutgoingRemoteTransaction outgoingTx) {
     }
 }
 

@@ -1,4 +1,4 @@
-package com.bitcoinpotato.overlay;
+package org.bitcoin.stratum;
 
 public class KeyPair {
     public KeyPair(String publicAddress, byte[] privateKey) {

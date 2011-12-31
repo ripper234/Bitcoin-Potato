@@ -1,4 +1,4 @@
-package com.bitcoinpotato.overlay;
+package org.bitcoin.stratum;
 
 import com.google.bitcoin.core.NetworkParameters;
 import play.Play;

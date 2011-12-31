@@ -1,6 +1,6 @@
 package models;
 
-import com.bitcoinpotato.overlay.KeyPair;
+import org.bitcoin.stratum.KeyPair;
 
 import java.math.BigDecimal;
 

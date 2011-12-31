@@ -1,8 +1,8 @@
 package jobs;
 
-import com.bitcoinpotato.overlay.StratumHolder;
 import models.ExpectedTransaction;
 import org.apache.log4j.Logger;
+import org.bitcoin.stratum.StratumHolder;
 import play.Play;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;

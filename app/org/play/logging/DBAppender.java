@@ -25,7 +25,7 @@ public class DBAppender extends AppenderSkeleton {
                 Thread.currentThread().getId(),
                 Thread.currentThread().getName(),
                 hostname
-                );
+        );
 
     }
 
