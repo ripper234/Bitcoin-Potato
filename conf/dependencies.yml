@@ -1,0 +1,15 @@
+# Application dependencies
+
+require:
+    - play 1.2.4
+
+    - com.google -> bitcoinj 0.3
+    - com.google.guava -> guava 10.0.1
+
+repositories:
+
+    - bitcoin-release:
+        type:   iBiblio
+        root:   "http://nexus.bitcoinj.org/content/repositories/releases"
+        contains:
+            - com.google -> bitcoinj

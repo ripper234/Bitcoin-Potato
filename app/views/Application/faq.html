@@ -1,0 +1,105 @@
+#{extends 'main.html' /}
+#{set title:'Bitcoin Hot Potato FAQ' /}
+
+<h3>What is Bitcoin Potato?</h3>
+
+Bitcoin Potato is an <a href="https://github.com/ripper234/Bitcoin-Potato">open source</a> game of virtual <a
+        href="http://en.wikipedia.org/wiki/Hot_Potato">Hot Potato</a> using <a
+        href="http://bitcoin.org/">Bitcoin</a>.
+
+<h3>How does it work?</h3>
+
+<p>The best way to explain is via an example:</p>
+
+<p>Let's say the current minimal fee is 1 BTC. To play, you send 1 BTC to the address displayed on the homepage. The
+    next fee is adjusted to be 20% more = 1.2 BTC.</p>
+
+<p>Sometime in the future, the next player will find Bitcoin Potato and send 1.2 BTC. 99% of this 1.2 BTC will go to
+    you, as the last player, with the house taking 1% = 0.012 BTC as commission.
+    At this point, you have earned a 19% interest on your "investment".
+</p>
+
+<p>Sometime after that, another player will find this site and send at least 1.44 BTC, so the previous player will be
+    compensated by at least 19%.
+    This can go on for some time, until "the last player". This player (a.k.a the sucker), will not find anyone to
+    follow him, and will actually lose all his money.</p>
+<h3>Can I send more than 20% more than the previous player?</h3>
+<p>You sure can. The same rules apply - 99% of your payment goes to the previous player, 1% goes to the house. The next
+    player will have to pay 20% more than your payment to join.</p>
+
+<h3>Is this a pyramid scheme?</h3>
+<p>Well, sort of. It's not really a pyramid because the branching factor is 1, but it does depend on bringing more
+    people in - this is not really a legitimate investment, but a game.</p>
+
+<p class='warning'>Only "invest" money you are willing to lose.</p>
+
+<h3>Can I trust you with my Bitcoin?</h3>
+
+<p>Well, you don't have to, but I would!</p>
+
+<p>Seriously now - Bitcoin Potato is currently just a fun game, not a Bitcoin bank. I can promise you that I won't run
+    away with your money.
+    My name is Ron Gross (ron.gross@gmail.com), and I'm the author of <a href="http://ripper234.com/">this blog</a>, so
+    I am not trying to be anonymous (you can stay anonymous of course).
+    I have previously <a href="https://bitcointalk.org/index.php?topic=31041.20">issued a Bond</a> at <a
+            href="http://glbse.com/">GLBSE</a> and raised a few dozens of BTC, so this is not my first Bitcoin
+    experiment.
+</p>
+
+<p>I plan to keep the web server behind Bitcoin Potato running forever * (hosted at Heroku free of chrage, so my only
+    fee is $10 a year for domain registration). So, even if it takes some time to find the next player ... we'll be
+    waiting right here.
+    In practice, I don't really expect the fees to pass 100 BTC, but who knows.
+</p>
+
+<p>
+    <small>* If the fee ever reaches 21,000,000 BTC, we will consider the game concluded and remove the website ☺.
+    </small>
+</p>
+
+<h3>Still, what about security exploits?</h3>
+<p><strong>I am not a security expert</strong>. Still, I believe the site is "relatively secure", for these reasons:
+
+<ul>
+    <li>The site is <a href="https://github.com/ripper234/Bitcoin-Potato">completely open source</a>, so you can check
+        it for yourself (please report any breaches to ron.gross@gmail.com).
+    </li>
+    <li>I do not store any Bitcoins on site. Your payment is immediately sent to the previous player, so nobody can
+        steal my wallet.
+    </li>
+    <li>It is stored on Heroku, which I believe to be "reasonably secure" (citation needed). I don't think an attacker
+        will be easily able to get to my database. I am using strong passwords, my machine is not trojan infected,
+        etc...
+    </li>
+    <li>The code is written in a modern programming language (Java), using a good web framework (<a
+            href="http://www.playframework.org/">Play!</a>), and to the best of my knowledge
+        doesn't do anything "risky" that would be open to attack (no user input is used in SQL queries, etc...).
+    </li>
+    <li><a href="http://en.wikipedia.org/wiki/Security_through_obscurity">Security through obscurity</a> - While a
+        dedicate attacker might find a way to attack Bitcoin Potato, he doesn't really have that much to gain.
+        At this time, the top fee on Bitcoin Potato is ${transaction.minimalAmount} BTC - hardly an amount worth
+        attacking a website for.
+    </li>
+</ul>
+</p>
+
+<h3>Why have you built this site?</h3>
+
+<p>Well, it's not in order to get rich. As I wrote above, I don't really expect the fees to pass 100 BTC (we're starting
+    the game at 0.01 BTC, so we need about 50 rounds to get to 100 BTC, if everybody pays the minimal fee).
+    I wrote it to:
+
+<ul>
+    <li>Explore an idea and see if people will play</li>
+    <li>Learn how to write a webapp that transacts in Bitcoin</li>
+    <li>Provide an open source sample of such a site - the site is <a
+            href="https://github.com/ripper234/Bitcoin-Potato">completely open source</a>. Hopefully this will help
+        other people build more serious Bitcoin enabled website.
+    </li>
+</ul>
+
+</p>
+
+<h3>Got further questions? Found bugs?</h3>
+<p>Please email me at ron.gross@gmail.com or <a href="https://github.com/ripper234/Bitcoin-Potato/issues">report issues
+    on github</a>.</p>

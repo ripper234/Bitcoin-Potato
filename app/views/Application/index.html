@@ -1,0 +1,39 @@
+#{extends 'main.html' /}
+#{set title:'Bitcoin Hot Potato' /}
+
+<h1>Who is the last sucker?</h1>
+
+<img src="@{'/public/images/hot_potato.png'}"/>
+
+<p>Bitcoin Potato is an <a href="https://github.com/ripper234/Bitcoin-Potato">open source</a> fun social experiment. The
+    objective: not be the last one stuck with the hot potato. The game is played using <a href="http://bitcoin.org/">Bitcoin</a>.
+</p>
+
+<p>To play, all you need to do is pay the current fee (or more). Then, if and when the next person joins the game, he
+    has to pay
+    at least 20% more than what you paid. You, being the previous <em>Potato Holder</em>, immediately get his full fund
+    (minus a
+    %1 fee). See the <a href="@{faq()}">FAQ</a>.
+</p>
+
+<div id='pay'>
+    <p>To play, simply send at least ${transaction.minimalAmount} BTC to #{address transaction.publicAddress /}
+
+    #{if testnet}
+        <span class='warning'>
+        (The site is not yet functional, do not send any Bitcoins!)
+        *{(The site is currently in alpha testing, use a testnet address!)}*
+    </span>
+
+    #{/if}
+
+        .</p>
+
+    <p>We will send 99% of your payment to #{address transaction.payoutAddress /}, and put you at the front of the
+        line.</p>
+</div>
+
+<br/>
+<p>If you liked this project, check out <a href="http://bitcoinpie.com/">Bitcoin Pie</a>.</p>
+
+<script type="text/javascript" src="http://s7.addthis.com/js/300/addthis_widget.js#pubid=ripper234"></script>
