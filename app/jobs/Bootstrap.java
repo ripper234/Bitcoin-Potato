@@ -3,6 +3,7 @@ package jobs;
 import models.ExpectedTransaction;
 import org.apache.log4j.Logger;
 import org.bitcoin.stratum.StratumHolder;
+import org.play.logging.DBAppender;
 import play.Play;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
@@ -16,6 +17,8 @@ public class Bootstrap extends Job {
 
     @Override
     public void doJob() throws Exception {
+        Logger.getRootLogger().addAppender(new DBAppender());
+
         logger.info("Bootstrapping");
 
         if (ExpectedTransaction.count() > 0) {

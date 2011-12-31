@@ -26,11 +26,12 @@ public class DBAppender extends AppenderSkeleton {
                 Thread.currentThread().getName(),
                 hostname
         );
-
+        logLine.save();
     }
 
     private String getStackTraceStr(LoggingEvent loggingEvent) {
-        return Joiner.on("\r\n").join(Lists.newArrayList(loggingEvent.getThrowableStrRep()));
+        return loggingEvent.getThrowableStrRep() == null ? null :
+                Joiner.on("\r\n").join(Lists.newArrayList(loggingEvent.getThrowableStrRep()));
     }
 
     private String getHostname() {
