@@ -1,4 +1,4 @@
-package models;
+package org.play.logging;
 
 import org.apache.log4j.Level;
 import play.db.jpa.Model;
@@ -11,7 +11,7 @@ public class Log4jLine extends Model {
     public Log4jLine() {
     }
 
-    public Log4jLine(Date eventTime, Level level, String component, String message, String stackTrace, String processName, int threadId, String threadName, String machineName) {
+    public Log4jLine(Date eventTime, Level level, String component, String message, String stackTrace, String processName, long threadId, String threadName, String machineName) {
         this.eventTime = eventTime;
         this.level = level;
         this.component = component;
@@ -29,7 +29,7 @@ public class Log4jLine extends Model {
     public String message;
     public String stackTrace;
     public String processName;
-    public int threadId;
+    public long threadId;
     public String threadName;
     public String machineName;
 }

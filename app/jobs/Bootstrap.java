@@ -2,17 +2,24 @@ package jobs;
 
 import com.bitcoinpotato.overlay.StratumHolder;
 import models.ExpectedTransaction;
+import org.apache.log4j.Logger;
 import play.Play;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
+import util.LogUtil;
 
 import java.math.BigDecimal;
 
 @OnApplicationStart
 public class Bootstrap extends Job {
+    private static final Logger logger = LogUtil.getLogger();
+
     @Override
     public void doJob() throws Exception {
+        logger.info("Bootstrapping");
+
         if (ExpectedTransaction.count() > 0) {
+            logger.info(String.format("Found %d existing transaction", ExpectedTransaction.count()));
             return;
         }
 
@@ -23,5 +30,6 @@ public class Bootstrap extends Job {
                 new BigDecimal("0.01")
         );
         nextPayment.save();
+        logger.info("Successfully initialized");
     }
 }

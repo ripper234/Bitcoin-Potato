@@ -17,4 +17,3 @@ portal/src/lib/**
 portal/src/data/attachments/**
 application.log
 sites/tmpClient*
-application.conf

@@ -39,30 +39,39 @@ public class TransactionPoller extends Job {
 
     @Override
     public void doJob() throws Exception {
+        logger.debug("Transaction poller running");
+
         ExpectedTransaction expectedTransaction = ExpectedTransaction.getLatest();
         List<Transaction> incomingTransactions = StratumHolder.Stratum.getIncomingTransactions(expectedTransaction.publicAddress);
 
         incomingTransactions = discardInvalidTransactions(incomingTransactions, expectedTransaction.minimalAmount);
         if (incomingTransactions.isEmpty()) {
             // nothing to do for now
+            logger.debug("No incoming transactions found");
             return;
         }
 
         // Check if there is more than one valid transaction.
         // The odds of this happening is slim, since we're polling every ten seconds.
         // Let's log it and pick the first
-        logger.warn(String.format("More than one transaction detected into %s: %s",
-                expectedTransaction.publicAddress,
-                Joiner.on(",").join(incomingTransactions)));
+        if (incomingTransactions.size() > 1) {
+            logger.warn(String.format("More than one transaction detected into %s: %s",
+                    expectedTransaction.publicAddress,
+                    Joiner.on(",").join(incomingTransactions)));
+        }
 
         // Set up the next expected transaction
         Transaction actualTransaction = incomingTransactions.get(0);
 
+        logger.info("Got transaction: " + actualTransaction);
+
         // Sanity check - the lower transactions are actually filtered beforehand.
         checkArgument(actualTransaction.amount.compareTo(expectedTransaction.minimalAmount) >= 0);
+
         BigDecimal nextMinimalAmount = actualTransaction.amount.multiply(velocity);
         ExpectedTransaction nextExpectedTx = new ExpectedTransaction(StratumHolder.Stratum.newKeyPair(), actualTransaction.fromAddress, nextMinimalAmount);
 
+        logger.info("Next payment will be " + );
         BigDecimal commission = commissionRate.multiply(actualTransaction.amount);
         BigDecimal payout = actualTransaction.amount.subtract(commission);
 
