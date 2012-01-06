@@ -3,7 +3,7 @@
 #{/set}
 #{extends 'main.html' /}
 #{set title:'Bitcoin Hot Potato' /}
-
+#{script 'index.js' /}
 <h1>Who is the last sucker?</h1>
 
 <img src="@{'/public/images/hot_potato.png'}"/>
@@ -20,20 +20,23 @@
 </p>
 
 <div id='pay'>
-    <p>To play, simply send at least ${transaction.minimalAmount} BTC to #{address transaction.publicAddress /}
+    <button id='to-play'>Click here to Play!</button>
+    <div id='play-instructions' class="hidden">
+        #{if testnet}
+            <span class='warning'>
+            (The site is not yet functional, do not send any Bitcoins!)
+            *{(The site is currently in alpha testing, use a testnet address!)}*
+        </span>
+        #{/if}
 
-    #{if testnet}
-        <span class='warning'>
-        (The site is not yet functional, do not send any Bitcoins!)
-        *{(The site is currently in alpha testing, use a testnet address!)}*
-    </span>
-
-    #{/if}
-
-        .</p>
-
-    <p>We will send 99% of your payment to #{address transaction.payoutAddress /}, and put you at the front of the
-        line.</p>
+        <ol>
+            <li>Send a payment of at least ${transaction.minimalAmount} to the </li>
+            <li>When we have at least 2 confirmations (average: 20 minutes), we'll accept the payment,
+                we will send 99% of your payment to #{address transaction.payoutAddress /}, and put you
+                at the front of the line.
+            </li>
+        </ol>
+    </div>
 </div>
 
 <br/><br/><br/>
