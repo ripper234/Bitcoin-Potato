@@ -43,4 +43,3 @@ public class IncomingTransaction extends TemporalModel {
         return find("byStatus order by created", status).fetch();
     }
 }
-

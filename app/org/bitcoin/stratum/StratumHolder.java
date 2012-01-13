@@ -9,7 +9,7 @@ public class StratumHolder {
     private StratumHolder() {
     }
 
-    public static final Stratum Stratum = new Stratum(readNetworkParameters());
+    public static final Stratum Stratum = new Stratum(readNetworkParameters(), "http://chicago.stratum.bitcoin.cz:8000/");
 
     private static NetworkParameters readNetworkParameters() {
         String network = getNetworkType();
