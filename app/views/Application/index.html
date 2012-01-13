@@ -38,8 +38,8 @@
                     <img src="@{'/public/images/completed.png'}" class="hidden completed">
                 </form>
             </li>
-            <li>Send a payment of at least ${latestTx.minimalAmount} to this address: <span id='payToPlayAddress'
-                                                                                            class="address">   (Please follow step 1)   </span>
+            <li>Send a payment of at least ${latestTx.nextMinimalAmount} to this address: <span id='payToPlayAddress'
+                                                                                                class="address">   (Please follow step 1)   </span>
             </li>
             <li>When we have at least 2 confirmations (average: 20 minutes), we'll accept the payment,
                 we will send 99% of your payment to the previous player (#{address latestTx.payoutAddress /}), and
