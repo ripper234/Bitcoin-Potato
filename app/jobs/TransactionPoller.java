@@ -43,7 +43,7 @@ public class TransactionPoller extends Job {
     public void doJob() throws Exception {
         logger.info("Transaction poller running");
 
-        ExpectedTransaction expectedTransaction = ExpectedTransaction.getLatest();
+        ExpectedTransaction expectedTransaction = ExpectedTransaction.getLatestValidated();
         List<RemoteTransaction> incomingTransactions = StratumHolder.Stratum.getIncomingTransactions(expectedTransaction.publicAddress);
 
         incomingTransactions = discardInvalidTransactions(incomingTransactions, expectedTransaction.minimalAmount);

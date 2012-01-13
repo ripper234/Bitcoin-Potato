@@ -32,14 +32,22 @@
         <ol>
             <li>Give us a return address (this is where we will pay you back):
                 <form id="return-address-form" action='@{Application.getPaymentAddress}' method='post'>
-                    <input name="returnAddress">
+                    <input name="returnAddress" id="returnAddress">
                     <input type='submit' value="Submit">
+                    <img src="@{'/public/images/loading.gif'}" class="loading hidden">
+                    <img src="@{'/public/images/completed.png'}" class="hidden completed">
                 </form>
             </li>
-            <li>Send a payment of at least ${transaction.minimalAmount} to the</li>
+            <li>Send a payment of at least ${transaction.minimalAmount} to this address: <span id='payToPlayAddress'
+                                                                                               class="address">   (Please follow step 1)   </span>
+            </li>
             <li>When we have at least 2 confirmations (average: 20 minutes), we'll accept the payment,
-                we will send 99% of your payment to #{address transaction.payoutAddress /}, and put you
+                we will send 99% of your payment to the previous player (#{address transaction.payoutAddress /}), and
+                put you
                 at the front of the line.
+            </li>
+            <li>You wait for the next player to come and pay up, and then you get at least 20% return on your
+                investment.
             </li>
         </ol>
     </div>

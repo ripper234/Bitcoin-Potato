@@ -26,7 +26,7 @@ public class ExpectedTransaction extends TemporalModel {
     /**
      * This assumes that no two entities have the same timestamp
      */
-    public static ExpectedTransaction getLatest() {
+    public static ExpectedTransaction getLatestValidated() {
         return find("order by created").first();
     }
 }

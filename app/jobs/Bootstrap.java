@@ -27,12 +27,13 @@ public class Bootstrap extends Job {
         }
 
         // Initial bootstrap
-        ExpectedTransaction nextPayment = new ExpectedTransaction(
+        BigDecimal startingFee = new BigDecimal("0.01");
+        ExpectedTransaction firstTransaction = new ExpectedTransaction(
                 StratumHolder.Stratum.newKeyPair(),
-                (String) Play.configuration.get("houseAddress"), // first payment is to the house
-                new BigDecimal("0.01")
-        );
-        nextPayment.save();
+                (String) Play.configuration.get("housePublicAddress"), // first payment is to the house
+                startingFee);
+        firstTransaction.actualAmount = startingFee;
+        firstTransaction.save();
         logger.info("Successfully initialized");
     }
 }

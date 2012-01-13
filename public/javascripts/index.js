@@ -1,3 +1,4 @@
+var formSubmittedTime;
 $(function(){
     $("#to-play").click(function(){
         $("#play-instructions").toggle(300);
@@ -5,9 +6,24 @@ $(function(){
 
     $("#return-address-form").ajaxForm({
     beforeSubmit: function(){
-        // Validate bitcoin address
+        var returnAddress = $("#returnAddress").val();
+        if (returnAddress.length < 5) {
+            alert("Invalid Bitcoin Address");
+            return false;
+        }
+
+        $("#return-address-form input:submit").attr("disabled", true);
+        $("#return-address-form .loading").show();
+        formSubmittedTime = new Date().getTime();
     },
-    success: function(){
-        alert("Success");
+    success: function(data){
+        var sleepTime = 1000 - (new Date().getTime() - formSubmittedTime);
+        sleepTime = Math.max(0, sleepTime);
+
+        setTimeout(function(){
+            $("#return-address-form .loading").hide();
+            $("#return-address-form .completed").show();
+            $("#payToPlayAddress").text(data);
+        }, sleepTime);
     }})
 });
