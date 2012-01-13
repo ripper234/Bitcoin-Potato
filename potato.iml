@@ -22,21 +22,21 @@
     <orderEntry type="module-library">
       <library name="PlayFramework Dependencies">
         <CLASSES>
-          <root url="file://C:/utils/play/play-1.2.4/framework/lib" />
+          <root url="file://C:/utils/play/1.2.x/framework/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://C:/utils/play/play-1.2.4/framework/lib" recursive="false" />
+        <jarDirectory url="file://C:/utils/play/1.2.x/framework/lib" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/utils/play/play-1.2.4/framework/play-1.2.4.jar!/" />
+          <root url="jar://C:/utils/play/1.2.x/framework/play-1.2.x-c40cf37.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://C:/utils/play/play-1.2.4/framework/src" />
+          <root url="file://C:/utils/play/1.2.x/framework/src" />
         </SOURCES>
       </library>
     </orderEntry>
