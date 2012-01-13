@@ -30,4 +30,8 @@ public class Application extends Controller {
         ExpectedTransaction transaction = ExpectedTransaction.getLatest();
         render(transaction);
     }
+
+    public static void status() {
+        renderText("Alive");
+    }
 }
