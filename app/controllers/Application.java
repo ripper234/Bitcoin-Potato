@@ -1,19 +1,19 @@
 package controllers;
 
-import models.ExpectedTransaction;
+import models.IncomingTransaction;
 import org.bitcoin.stratum.StratumHolder;
 import play.Play;
 import play.mvc.Controller;
 
 public class Application extends Controller {
     public static void index() {
-        ExpectedTransaction transaction = ExpectedTransaction.getLatestValidated();
+        IncomingTransaction latestTx = IncomingTransaction.getLatestValid();
         boolean testnet = !Play.configuration.get("network").equals("prodNet");
-        render(transaction, testnet);
+        render(latestTx, testnet);
     }
 
     public static void faq() {
-        ExpectedTransaction transaction = ExpectedTransaction.getLatestValidated();
+        IncomingTransaction transaction = IncomingTransaction.getLatestValid();
         render(transaction);
     }
 
@@ -22,10 +22,11 @@ public class Application extends Controller {
     }
 
     public static String getPaymentAddress(String returnAddress) {
-        ExpectedTransaction lastValidTransaction = ExpectedTransaction.getLatestValidated();
-        ExpectedTransaction nextTransaction = new ExpectedTransaction(StratumHolder.Stratum.newKeyPair(), returnAddress, BookKeeper.nextMinimalAmount(lastValidTransaction));
+        IncomingTransaction lastValidTransaction = IncomingTransaction.getLatestValid();
+        IncomingTransaction nextTransaction = new IncomingTransaction(StratumHolder.Stratum.newKeyPair(), returnAddress, BookKeeper.nextMinimalAmount(lastValidTransaction));
         nextTransaction.save();
         return nextTransaction.publicAddress;
     }
+
 }
 

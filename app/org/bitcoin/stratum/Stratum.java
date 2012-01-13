@@ -5,7 +5,9 @@ import com.google.bitcoin.core.NetworkParameters;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -28,12 +30,28 @@ public class Stratum {
     /**
      * Returns a list of all transaction that went to {@code address}, sorted by date.
      */
-    public List<RemoteTransaction> getIncomingTransactions(String address) {
+    public List<RemoteTransaction> getRemoteTransactions(String address) {
         // TODO
         return newArrayList();
     }
 
     public void sendTransaction(OutgoingRemoteTransaction outgoingTx) {
+    }
+
+    public AddressInfo getAddressInfo(String publicAddress) {
+        // TODO
+        return null;
+    }
+
+    public Map<String, AddressInfo> getAddressInfo(Collection<String> allPublicAddress) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    /**
+     * For now, this is a constant
+     */
+    public BigDecimal getTransactionFee() {
+        return new BigDecimal("0.005");
     }
 }
 

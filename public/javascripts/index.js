@@ -12,7 +12,7 @@ $(function(){
             return false;
         }
 
-        $("#return-address-form input:submit").attr("disabled", true);
+        $("#return-address-form input[type='submit']").attr("disabled", "disabled");
         $("#return-address-form .loading").show();
         formSubmittedTime = new Date().getTime();
     },

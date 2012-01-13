@@ -1,7 +1,7 @@
 package jobs;
 
 import com.bitcoinpotato.util.LogUtil;
-import models.ExpectedTransaction;
+import models.IncomingTransaction;
 import org.apache.log4j.Logger;
 import org.bitcoin.stratum.StratumHolder;
 import play.Play;
@@ -21,17 +21,18 @@ public class Bootstrap extends Job {
 
         logger.info("Bootstrapping");
 
-        if (ExpectedTransaction.count() > 0) {
-            logger.info(String.format("Found %d existing transaction", ExpectedTransaction.count()));
+        if (IncomingTransaction.count() > 0) {
+            logger.info(String.format("Found %d existing transaction", IncomingTransaction.count()));
             return;
         }
 
         // Initial bootstrap
         BigDecimal startingFee = new BigDecimal("0.01");
-        ExpectedTransaction firstTransaction = new ExpectedTransaction(
+        IncomingTransaction firstTransaction = new IncomingTransaction(
                 StratumHolder.Stratum.newKeyPair(),
                 (String) Play.configuration.get("housePublicAddress"), // first payment is to the house
                 startingFee);
+        firstTransaction.status = IncomingTransaction.Status.Valid;
         firstTransaction.actualAmount = startingFee;
         firstTransaction.save();
         logger.info("Successfully initialized");
