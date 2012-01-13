@@ -1,5 +1,5 @@
 #{set 'moreStyles'}
-    #{stylesheet 'index.css' /}
+#{stylesheet 'index.css' /}
 #{/set}
 #{extends 'main.html' /}
 #{set title:'Bitcoin Hot Potato' /}
@@ -30,7 +30,13 @@
         #{/if}
 
         <ol>
-            <li>Send a payment of at least ${transaction.minimalAmount} to the </li>
+            <li>Give us a return address (this is where we will pay you back):
+                <form id="return-address-form" action='@{Application.getPaymentAddress}' method='post'>
+                    <input name="returnAddress">
+                    <input type='submit' value="Submit">
+                </form>
+            </li>
+            <li>Send a payment of at least ${transaction.minimalAmount} to the</li>
             <li>When we have at least 2 confirmations (average: 20 minutes), we'll accept the payment,
                 we will send 99% of your payment to #{address transaction.payoutAddress /}, and put you
                 at the front of the line.

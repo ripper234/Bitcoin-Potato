@@ -10,20 +10,6 @@ public class Application extends Controller {
         ExpectedTransaction transaction = ExpectedTransaction.getLatest();
         boolean testnet = !Play.configuration.get("network").equals("prodNet");
         render(transaction, testnet);
-//        foo();
-    }
-
-    private static void foo() {
-        try {
-            bar();
-        } catch (Exception e) {
-            throw new RuntimeException("Oh yeah?", e);
-        }
-
-    }
-
-    private static void bar() {
-        throw new RuntimeException("Up yours");
     }
 
     public static void faq() {
@@ -33,5 +19,9 @@ public class Application extends Controller {
 
     public static void status() {
         renderText("Alive");
+    }
+
+    public static String getPaymentAddress(String returnAddress) {
+        return "123";
     }
 }

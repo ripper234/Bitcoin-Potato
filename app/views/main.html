@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
     <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
 
-#{get 'moreStyles' /}
+    #{get 'moreStyles' /}
     <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
-    <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript"
-            charset="${_response_encoding}"></script>
-#{get 'moreScripts' /}
+    <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript"></script>
+    <script src="@{'/public/javascripts/jquery.form.js'}" type="text/javascript"></script>
+    #{get 'moreScripts' /}
 
     <!-- GA -->
     <script type="text/javascript">
@@ -21,12 +21,13 @@
         _gaq.push(['_trackPageview']);
 
         (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+        '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
         })();
     </script>
     <!-- GA -->
@@ -37,7 +38,7 @@
     <a href="@{Application.faq()}">FAQ</a>
 </div>
 <div id="content">
-#{doLayout /}
+    #{doLayout /}
 </div>
 </body>
 </html>
