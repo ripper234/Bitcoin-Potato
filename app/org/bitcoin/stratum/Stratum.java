@@ -73,7 +73,7 @@ public class Stratum {
      * For now, this is a constant
      */
     public BigDecimal getTransactionFee() {
-        return new BigDecimal("0.005");
+        return new BigDecimal("0.0005");
     }
 }
 
