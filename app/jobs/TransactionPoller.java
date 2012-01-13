@@ -38,6 +38,9 @@ public class TransactionPoller extends Job {
 
     @Override
     public void doJob() throws Exception {
+        if (Play.runingInTestMode())
+            return;
+
         logger.info("Transaction poller running");
 
         // While we can process transactions, we loop
