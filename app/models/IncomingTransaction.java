@@ -19,7 +19,6 @@ public class IncomingTransaction extends TemporalModel {
         this.status = Status.New;
     }
 
-    public String fromAddress;
     @Unique
     public String publicAddress;
     public String payoutAddress;
