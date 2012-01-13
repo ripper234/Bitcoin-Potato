@@ -32,6 +32,7 @@ public class Bootstrap extends Job {
                 StratumHolder.Stratum.newKeyPair(),
                 (String) Play.configuration.get("housePublicAddress"), // first payment is to the house
                 startingFee);
+
         firstTransaction.status = IncomingTransaction.Status.Valid;
         firstTransaction.actualAmount = startingFee;
         firstTransaction.save();
