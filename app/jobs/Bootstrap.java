@@ -1,9 +1,9 @@
 package jobs;
 
-import com.bitcoinpotato.util.LogUtil;
 import models.IncomingTransaction;
 import org.apache.log4j.Logger;
 import org.bitcoin.stratum.StratumHolder;
+import org.bitcoinpotato.util.LogUtil;
 import play.Play;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;

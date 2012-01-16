@@ -1,11 +1,11 @@
 package jobs;
 
-import com.bitcoinpotato.util.LogUtil;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import models.IncomingTransaction;
 import org.apache.log4j.Logger;
 import org.bitcoin.stratum.*;
+import org.bitcoinpotato.util.LogUtil;
 import play.Play;
 import play.jobs.Every;
 import play.jobs.Job;

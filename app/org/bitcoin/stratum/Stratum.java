@@ -1,9 +1,10 @@
 package org.bitcoin.stratum;
 
-import com.bitcoinpotato.util.Maps3;
 import com.google.bitcoin.core.ECKey;
 import com.google.bitcoin.core.NetworkParameters;
 import com.google.common.base.Function;
+import com.google.gson.JsonObject;
+import org.bitcoinpotato.util.Maps3;
 import play.libs.WS;
 
 import javax.annotation.Nullable;
@@ -39,8 +40,13 @@ public class Stratum {
     public AddressInfo getAddressInfo(String publicAddress) {
         WS.HttpResponse response = null;
         try {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("key1", "value1");
+            jsonObject.addProperty("key2", "value2");
+            jsonObject.add("key3", new JsonObject());
             response = WS.url(startumServerUrl)
                     .setHeader("content-type", "application/stratum")
+                            //.body(json)
                     .setParameter("id", 1)
                     .setParameter("method", "blockchain.address.get_history")
                     .setParameter("params", publicAddress)

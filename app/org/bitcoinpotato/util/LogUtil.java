@@ -1,4 +1,4 @@
-package com.bitcoinpotato.util;
+package org.bitcoinpotato.util;
 
 import org.apache.log4j.Logger;
 
